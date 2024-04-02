@@ -1,0 +1,27 @@
+
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14.3-alpine3.15
+    restart: always
+    ports:
+      - '5431:5432'
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+  adv:
+    container_name: web
+    build: .
+    ports:
+      - 8080:5000
+    command: python server.py
+    volumes:
+      - ./static/:/app/static/
+    env_file:
+      ./.env
+    depends_on:
+      - db
+
